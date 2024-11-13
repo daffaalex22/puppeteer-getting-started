@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer-core');
-// Or import puppeteer from 'puppeteer-core';
+const fs = require("fs");
 
 (async () => {
   // Launch the browser and open a new blank page
@@ -11,7 +11,9 @@ const puppeteer = require('puppeteer-core');
   const page = await browser.newPage();
 
   // Navigate the page to a URL.
-  await page.goto('https://www.tokopedia.com/find/pc-rakitan?source=homepage.popular_keywords.0.0&srp_component_id=06.01.01.04');
+  await page.goto('https://www.tokopedia.com/find/pc-rakitan?source=homepage.popular_keywords.0.0&srp_component_id=06.01.01.04',{
+    waitUntil: "networkidle2",
+  });
 
   // Function to scroll to the bottom
   await page.evaluate(async () => {
@@ -75,9 +77,13 @@ const puppeteer = require('puppeteer-core');
 
     if (text !== "NULL" && text.length > 0) {
       productCount++
-      console.log(text, price)
-      console.log(URL)
-      console.log(thumbnailURL)
+      fs.appendFile(
+        "results.csv",
+        `${text.replace(/,/g, ".")},${price},${URL},${thumbnailURL}\n`,
+        function (err) {
+          if (err) throw err;
+        }
+      );
     }
   }
 
