@@ -30,30 +30,54 @@ const puppeteer = require('puppeteer-core');
       }, 100); // scroll interval
     });
   });
-  
-  // After scrolling, do any actions needed at the bottom of the page
-  console.log('Scrolled to the bottom of the page');
 
 
-  // Get Product Title
+  // Get Product's Data
   await page.waitForSelector(".css-1vknpta")
   await page.waitForSelector(".css-15vayma")
-  const titles = await page.$$('.css-1vknpta > .css-15vayma');
+  const productHandles = await page.$$('.css-1vknpta > .css-15vayma');
 
   let productCount = 0;
 
-  for (const title of titles) {
-    let text = "NULL"
+  for (const productHandle of productHandles) {
+    let text = "NULL";
+    let price = "NULL";
+    let URL = "Null";
+    let thumbnailURL = "NULL";
     
     try {
       text = await page.evaluate(
-        (el) => el.textContent,
-        title
+        (el) => el.querySelector('[class="OWkG6oHwAppMn1hIBsC3pQ=="]').textContent,
+        productHandle
+      );
+    } catch (error) {}
+
+    try {
+      price = await page.evaluate(
+        (el) => el.querySelector('[class="_8cR53N0JqdRc+mQCckhS0g== "]').textContent,
+        productHandle
+      );
+    } catch (error) {}
+
+    try {
+      URL = await page.evaluate(
+        (el) => el.querySelector('[class="Nq8NlC5Hk9KgVBJzMYBUsg== _9iR4AH1Hmh9qL02FRNUyvw=="]').getAttribute("href"),
+        productHandle
+      );
+    } catch (error) {}
+
+    try {
+      thumbnailURL = await page.evaluate(
+        (el) => el.querySelector('[class="css-1c345mg N8xmpVrww3v8HjDVw7D5rg=="]').getAttribute("src"),
+        productHandle
       );
     } catch (error) {}
 
     if (text !== "NULL" && text.length > 0) {
       productCount++
+      console.log(text, price)
+      console.log(URL)
+      console.log(thumbnailURL)
     }
   }
 
