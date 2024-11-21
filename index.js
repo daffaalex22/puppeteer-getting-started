@@ -49,28 +49,26 @@ const fs = require("fs");
     
     try {
       text = await page.evaluate(
-        (el) => el.querySelector('[class="OWkG6oHwAppMn1hIBsC3pQ=="]').textContent,
+        (el) => el.querySelector('a > div > div > div > span').textContent,
         productHandle
       );
     } catch (error) {}
 
     try {
-      price = await page.evaluate(
-        (el) => el.querySelector('[class="_8cR53N0JqdRc+mQCckhS0g== "]').textContent,
-        productHandle
-      );
+      const priceSelector = await productHandle.waitForSelector('text/Rp',)
+      price = await priceSelector.evaluate((el) => el.textContent);
     } catch (error) {}
 
     try {
       URL = await page.evaluate(
-        (el) => el.querySelector('[class="Nq8NlC5Hk9KgVBJzMYBUsg== _9iR4AH1Hmh9qL02FRNUyvw=="]').getAttribute("href"),
+        (el) => el.querySelector('a').getAttribute("href"),
         productHandle
       );
     } catch (error) {}
 
     try {
       thumbnailURL = await page.evaluate(
-        (el) => el.querySelector('[class="css-1c345mg N8xmpVrww3v8HjDVw7D5rg=="]').getAttribute("src"),
+        (el) => el.querySelector('[alt="product-image"]').getAttribute("src"),
         productHandle
       );
     } catch (error) {}
